@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<div class="container">
+
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Ora</th>
+                    <th scope="col">Lunedì</th>
+                    <th scope="col">Martedì</th>
+                    <th scope="col">Mercoledì</th>
+                    <th scope="col">Giovedì</th>
+                    <th scope="col">Venerdì</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="ora in [15, 16, 17, 18]">
+                    <th scope="row">{{ora}}</th>
+                    <td ng-repeat="day in ['LUN', 'MAR', 'MER', 'GIO', 'VEN']">
+                        <div class="card bg-light text-center p-1">
+                            <div class="cursor-pointer" ng-click="showModal(ora, day, ripetizioni_data | filter: {giorno: day, oraInizio: ora})" ng-repeat="ripetizione in (ripetizioni_dataFiltrate = (ripetizioni_data | filter: {giorno: day, oraInizio: ora}:true | unique)) | limitTo: 2" ng-show="ripetizioni_dataFiltrate.length">
+                                {{ripetizione.corso.titolo}}
+                            </div>
+                            <span class="cursor-pointer" ng-click="showModal(ora, day, ripetizioni_data | filter: {giorno: day, oraInizio: ora})" ng-show="ripetizioni_dataFiltrate.length > 2">
+                                e altre {{ripetizioni_dataFiltrate.length-2}}
+                            </span>
+                            <span ng-if="ripetizioni_dataFiltrate.length === 0">
+                                Nessuna ripetizione.
+                            </span>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <aside> 
+        <div class="modal fade" id="addPrenotazione" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ripetizioni disponibili il {{dayConverter(giorno)}} alle {{ora}}:00</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="newPrenotazioneModalErrorMessage" class="alert alert-danger" role="alert" ng-if="newPrenotazioneErrorOccurred" ng-bind-html="newPrenotazioneModalErrorMessage | unsafe">
+                        </div>
+                        <div class="bd bd-tabs">
+                            <div class="row">
+                                <div class="col-7">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                        <a class="nav-link" ng-class="{'active': view_tab == $index}" ng-click="changeTab($index, tab.corso.id)" ng-repeat="tab in data | unique" href="#" role="tab">
+                                            {{tab.corso.titolo}}
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="tab-content" id="v-pills-tabContent">
+                                        <div class="tab-pane fade active show" role="tabpanel">
+                                            <label for="docente">Docente</label>
+                                            <select id="docenteSelection" class="form-control" ng-model="docenteSelection" ng-init="docenteSelection='0'">
+                                                <option value="0" disabled="disabled">Selezione docente</option>
+                                                <option ng-repeat="docente in (data | filter: { corso: {id: idCorsoSelect}}:true)" value="{{docente.docente.id}}">
+                                                    {{docente.docente.cognome}} {{docente.docente.nome}}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" ng-disabled="docenteSelection === '0'" class="btn btn-primary" ng-click="addPrenotazione()">Conferma</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>

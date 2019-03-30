@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<div class="container">
+    <form class="form-inline mt-4">
+        <input type="text" class="form-control mb-2 mr-sm-2" ng-model="search" placeholder="Cerca docente...">
+        <button title="Aggiungi" type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addDocente">Nuovo docente</button>
+    </form>
+    
+    <ul class="list-group mt-4 mb-4">
+        <li class="list-group-item clearfix" ng-repeat="docente in ( filteredList = (docenti_data | filter: filterDocenti | orderBy: ['-stato','cognome', 'nome'])) | limitTo:itemsPerPage:limit">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-md-6 col-md-push-6">
+                        <b>{{docente.cognome}} {{docente.nome}}</b>
+                        <span ng-if="!docente.stato" class="badge badge-danger">Non attivo</span>
+                    </div>
+                    <div class="col-md-6 col-md-pull-6">
+                        <div class="btn-group float-right" role="group">
+                            <button ng-click="showModalName(docente)" title="Modifica" type="button" class="btn btn-secondary">Modifica</button>
+                            <button ng-disabled="!docente.stato" ng-click="showModalDelete(docente)" title="Elimina" type="button" class="btn btn-danger">Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    
+    <div ng-if="filteredList.length === 0" class="alert alert-warning" role="alert">
+        Nessuna informazione presente.
+    </div>
+    
+    <pagination-controls item-count="filteredList.length" items-per-page="itemsPerPage" begin-index="limit"></pagination-controls>
+</div>
+
+
+<aside>
+    <div class="modal fade" id="editNameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Modifica - {{docente.cognome}} {{docente.nome}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="editDocenteModalErrorMessage" class="alert alert-danger" role="alert" ng-if="editDocenteErrorOccurred">
+                        {{editDocenteModalErrorMessage}}
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <label for="nomeDocente">Nome docente</label>
+                            <input type="text" class="form-control" id="nomeDocente" ng-model="nomeDocente">
+                        </div>
+                        <div class="col">
+                            <label for="cognomeDocente">Cognome docente</label>
+                          <input type="text" class="form-control" id="cognomeDocente" ng-model="cognomeDocente">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="editName()" ng-disabled="!(nomeDocente && cognomeDocente)">Modifica</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<aside>
+    <div class="modal fade" id="addDocente" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Nuovo docente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="nuovoDocenteModalErrorMessage" class="alert alert-danger" role="alert" ng-if="nuovoDocenteErrorOccurred">
+                        {{nuovoDocenteModalErrorMessage}}
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input type="text" class="form-control" id="nomeNuovoDocente" ng-model="nomeNuovoDocente" placeholder="Nome docente">
+                        </div>
+                        <div class="col">
+                          <input type="text" class="form-control" id="cognomeNuovoDocente" ng-model="cognomeNuovoDocente" placeholder="Cognome docente">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="addDocente()" ng-disabled="!(nomeNuovoDocente && cognomeNuovoDocente)">Aggiungi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<aside>
+    <div class="modal fade" id="deleteDocente" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Elimina docente</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="eliminaDocenteModalErrorMessage" class="alert alert-danger" role="alert" ng-if="eliminaDocenteErrorOccurred">
+                        {{eliminaDocenteModalErrorMessage}}
+                    </div>
+                    <div class="form-group">
+                        <label>Confermi di voler eliminare il docente {{docente.cognome}} {{docente.nome}}?</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-danger" ng-click="deleteDocente()">Elimina</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

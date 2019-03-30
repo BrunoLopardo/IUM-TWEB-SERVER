@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<div class="container">
+    <div class="col-md-6 offset-md-3 mt-5">
+        <div class="card card-outline-secondary">
+            <div class="card-header">
+                <h3 class="mb-0">Modifica account</h3>
+            </div>
+            <div class="card-body">
+                <div id="editAccountErrorMessage" class="alert alert-danger" role="alert" ng-if="editAccountErrorOccurred">
+                    {{editAccountErrorMessage}}
+                </div>
+                <form class="form" role="form" autocomplete="off">
+                    <div class="form-group">
+                        <label for="nuovoUsername">Nuovo Username</label>
+                        <input type="text" class="form-control" id="nuovoUsername" placeholder="Inserisci nuovo Username" ng-model="newUsername">
+                    </div>
+                    <div class="form-group">
+                        <label for="vecchiaPassword">Vecchia Password</label>
+                        <input type="password" class="form-control" id="vecchiaPassword" placeholder="Inserisci vecchia password" ng-model="oldPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="nuovaPassword">Nuova Password</label>
+                        <input type="password" class="form-control" id="nuovaPassword" placeholder="Inserisci nuova password" ng-model="newPassword">
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-primary btn-block" ng-click="editAccount()" ng-disabled="!(newUsername && oldPassword && newPassword)">Modifica Username e Password</button>
+                        <button class="btn btn-danger btn-block" type="button" data-toggle="modal" data-target="#deleteAccountModal">Elimina Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+        
+    <aside>
+        <div class="modal fade" id="deleteAccountModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Elimina Account</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="deleteAccountErrorMessage" class="alert alert-danger" role="alert" ng-if="deleteAccountErrorOccurred">
+                            {{deleteAccountErrorMessage}}
+                        </div>
+                        <p>Per eliminare l'account inserire la password</p>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Inserisci Password" ng-model="deleteAccountModalPassword">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-danger" ng-click="deleteAccount()" ng-disabled="!deleteAccountModalPassword">Elimina</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>
+

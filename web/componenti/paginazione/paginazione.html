@@ -1,0 +1,7 @@
+<nav>
+    <ul class="pagination" ng-class="{'pagination-sm' : $root.windowWidth < breakpoint }">
+        <li ng-if="$root.windowWidth >= breakpoint" class="page-item" ng-class="{disabled : currentPage === 1}"><a class="page-link prevent-default" href="#" ng-click="prev()">&laquo;</a></li>
+        <li class="page-item" ng-repeat="i in pagination(currentPage, pageCount) track by $index" ng-class="{active : currentPage === i, disabled : i === '...'}"><a class="page-link prevent-default" href="#" ng-click="setPage(i)">{{i}}</a></li>
+        <li ng-if="$root.windowWidth >= breakpoint" class="page-item" ng-class="{disabled : currentPage === pageCount}"><a class="page-link prevent-default" href="#" ng-click="next()">&raquo;</a></li>
+    </ul>
+</nav>

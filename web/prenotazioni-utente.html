@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<div class="container">
+    <form class="form-inline mt-4">
+        <input type="text" class="form-control mb-2 mr-sm-2" ng-model="search" placeholder="Cerca una prenotazione...">
+    </form>
+
+    <ul class="nav nav-pills mt-4 mb-4" id="pills-tab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" href="#" data-toggle="pill" ng-click="statoFilter = ''">Tutte</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" ng-click="statoFilter = 'ATTIVA'">Attive</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" ng-click="statoFilter = 'EFFETTUATA'">Effettuate</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#" data-toggle="pill" ng-click="statoFilter = 'DISDETTA'">Cancellate</a>
+        </li>
+    </ul>
+
+    <div ng-if="filteredList.length === 0" class="alert alert-warning" role="alert">
+        Nessuna informazione presente.
+    </div>
+
+    <ul class="list-group mb-4">
+        <li class="list-group-item clearfix" ng-repeat="prenotazione in ( filteredList = ( prenotazioni_utente_data| orderBy: ['-createdAt'] | filter: { stato: statoFilter} | filter: filterCorsoDocente))| limitTo:itemsPerPage:limit">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-right ">      
+                    <div class="col-sm-9 col-sm-push-9">
+                        <p><b>{{prenotazione.corso.titolo}} - </b>{{prenotazione.docente.nome}}  {{prenotazione.docente.cognome}}
+                            <span ng-if="prenotazione.stato == 'ATTIVA' " class="badge badge-success">Attiva</span>
+                            <span ng-if="prenotazione.stato == 'EFFETTUATA' " class="badge badge-secondary">Effettuata</span>
+                            <span ng-if="prenotazione.stato == 'DISDETTA' " class="badge badge-danger">Cancellata</span>
+                        </p>
+                    </div>
+                    <div class="col sm-3 col-sm-pull-3 ">
+                        <b class="float-right"> {{ prenotazione.createdAt | date :'dd/MM/yyyy'}}</b> 
+                    </div>
+
+                </div>
+
+                <div class="row align-items-right justify-content-between">
+                    <div class="col-sm-9 col-sm-push-9">
+                        <p> {{dayConverter(prenotazione.giorno)}} alle {{prenotazione.oraInizio}}:00 </p>
+                    </div>
+                    <div class="col-sm-3 col-sm-push-3">
+                        <p class="float-right"> {{ prenotazione.createdAt | date :'HH:mm:ss'}}</p>
+                    </div>
+                </div>
+
+                <div class="btn-group float-right" role="group">
+                   <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#cancelReservationModal" ng-disabled="prenotazione.stato == 'DISDETTA' || prenotazione.stato == 'EFFETTUATA'" ng-click="showModal(prenotazione)">Disdici</button>
+                </div>
+            </div>
+        </li>
+    </ul>
+    
+    <pagination-controls item-count="filteredList.length" items-per-page="itemsPerPage" begin-index="limit" ></pagination-controls>
+
+    <aside>
+        <div class="modal fade" id="cancelReservationModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Conferma disdetta</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p>Vuoi confermare la disdetta della prenotazione?</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-danger" ng-click="cancelReservation()">Conferma</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+</div>

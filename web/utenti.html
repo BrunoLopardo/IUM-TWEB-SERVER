@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<div class="container">
+    <form class="form-inline mt-4">
+        <input type="text" class="form-control mb-2 mr-sm-2" ng-model="search" placeholder="Cerca utente...">
+    </form>
+    
+    <ul class="list-group mt-4 mb-4">
+        <li class="list-group-item clearfix" ng-repeat=" utente in ( filteredList = (utenti_data |orderBy: ['username'] | filter: { username: search })) | limitTo:itemsPerPage:limit">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-md-6 col-md-push-6">
+                        <b>{{utente.username}}</b>
+                        <span ng-if="utente.isAdmin" class="badge badge-primary">Admin</span>
+                    </div>
+                    <div class="col-md-6 col-md-pull-6">
+                        <div class="btn-group float-right" role="group">
+                            <button  type="button" class="btn btn-primary" ng-click="showModalPromote(utente)">Cambia ruolo</button>
+                            <button  type="button" class="btn btn-secondary" ng-click="showModalEdit(utente)">Modifica</button>
+                            <button  type="button" class="btn btn-danger" ng-click="showModalDelete(utente)">Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    
+    <pagination-controls item-count="filteredList.length" items-per-page="itemsPerPage" begin-index="limit" ></pagination-controls>
+    
+    <div ng-if="filteredList.length === 0" class="alert alert-warning" role="alert">
+        Nessuna informazione presente.
+    </div>
+    
+    <!-- Modal pulsante Promuovi -->
+    <aside>
+        <div class="modal fade" id="promoteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Cambia ruolo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="changeRoleUserErrorMessage" class="alert alert-danger" role="alert" ng-if="changeRoleUserErrorMessage">
+                            {{changeRoleUserErrorMessage}}
+                        </div>
+                        <p>Confermi di voler {{utente.isAdmin ? "rimuovere i privilegi di admin all'utente " : "promuovere ad admin l'utente "}} {{utente.username}}?</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-primary" ng-click="changeRoleUser()">Conferma</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Modal pulsante modifica -->
+    <aside>
+        <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Modifica password utente</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="editPasswordErrorMessage" class="alert alert-danger" role="alert" ng-if="editPasswordErrorOccurred">
+                            {{editPasswordErrorMessage}}
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="nuovaPasswordUtente" ng-model="nuovaPasswordUtente" placeholder="Nuova password">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-primary" ng-click="editPassword()" ng-disabled="!nuovaPasswordUtente">Modifica</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+    
+    <!-- Modal pulsante elimina -->
+    <aside>
+        <div class="modal fade" id="deleteUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalCenterTitle">Elimina utente</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+
+                    <div class="modal-body">
+                        <div id="deleteUserErrorMessage" class="alert alert-danger" role="alert" ng-if="deleteUserErrorOccurred">
+                            {{deleteUserErrorMessage}}
+                        </div>
+                         <div class="form-group">
+                            <label>Confermi di voler eliminare l'utente {{utente.username}}?</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                        <button type="button" class="btn btn-danger" ng-click="deleteUser()">Elimina</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+</div>

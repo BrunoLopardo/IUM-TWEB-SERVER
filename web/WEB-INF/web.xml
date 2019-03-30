@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+    <context-param>
+        <description>Url of the database</description>
+        <param-name>DB_URL</param-name>
+        <param-value>jdbc:postgresql://localhost:5432/ium-tweb</param-value>
+    </context-param>
+    <context-param>
+        <description>Database user</description>
+        <param-name>USER</param-name>
+        <param-value>ium-tweb-app</param-value>
+    </context-param>
+    <context-param>
+        <description>Database password for the user</description>
+        <param-name>PSW</param-name>
+        <param-value>ium-tweb-app</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>MainServlet</servlet-name>
+        <servlet-class>servlets.MainServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>MainServlet</servlet-name>
+        <url-pattern>/MainServlet</url-pattern>
+    </servlet-mapping>
+    <session-config>
+        <session-timeout>
+            30
+        </session-timeout>
+    </session-config>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/index.jsp</location>
+    </error-page> 
+</web-app>

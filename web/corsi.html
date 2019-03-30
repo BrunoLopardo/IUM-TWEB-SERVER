@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<div class="container">
+    <form class="form-inline mt-4">
+        <input type="text" class="form-control mb-2 mr-sm-2" ng-model="search" placeholder="Cerca corso...">
+        <button title="Aggiungi" type="button" class="btn btn-primary mb-2" data-toggle="modal" data-target="#addCorso">Nuovo corso</button>
+    </form>
+    
+    <ul class="list-group mt-4 mb-4">
+        <li class="list-group-item clearfix" ng-repeat="corso in ( filteredList = (corsi_data | filter: { titolo: search } | orderBy: ['-stato','titolo'] )) | limitTo:itemsPerPage:limit">
+            <div class="container-fluid">
+                <div class="row align-items-center justify-content-between">
+                    <div class="col-md-6 col-md-push-6">
+                        <b>{{corso.titolo}}</b>
+                        <span ng-if="!corso.stato" class="badge badge-danger">Non attivo</span>
+                    </div>
+                    <div class="col-md-6 col-md-pull-6">
+                        <div class="btn-group float-right" role="group">
+                            <button ng-click="showModalName(corso)" title="Modifica" type="button" class="btn btn-secondary">Modifica</button>
+                            <button ng-disabled="!corso.stato" ng-click="showModalDelete(corso)" title="Elimina" type="button" class="btn btn-danger">Elimina</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    
+    <div ng-if="filteredList.length === 0" class="alert alert-warning" role="alert">
+        Nessuna informazione presente.
+    </div>
+    
+    <pagination-controls item-count="filteredList.length" items-per-page="itemsPerPage" begin-index="limit" ></pagination-controls>
+</div>
+
+
+<aside>
+    <div class="modal fade" id="editNameModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Modifica - {{corso.titolo}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="editCorsoModalErrorMessage" class="alert alert-danger" role="alert" ng-if="editCorsoErrorOccurred">
+                        {{editCorsoModalErrorMessage}}
+                    </div>
+                    <div class="form-group">
+                        <label>Nome corso:</label>
+                        <input type="text" class="form-control" id="nomeCorso" ng-model="nomeCorso">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="editName()" ng-disabled="!nomeCorso">Modifica</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<aside>
+    <div class="modal fade" id="addCorso" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Nuovo corso</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="nuovoCorsoModalErrorMessage" class="alert alert-danger" role="alert" ng-if="nuovoCorsoErrorOccurred">
+                        {{nuovoCorsoModalErrorMessage}}
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="nomeNuovoCorso" ng-model="nomeNuovoCorso" placeholder="Nome corso">
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ng-click="addCorso()" ng-disabled="!nomeNuovoCorso">Aggiungi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>
+
+<aside>
+    <div class="modal fade" id="deleteCorso" tabindex="-1" role="dialog" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">Elimina corso</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <div id="nuovoCorsoModalErrorMessage" class="alert alert-danger" role="alert" ng-if="eliminaCorsoErrorOccurred">
+                        {{eliminaCorsoModalErrorMessage}}
+                    </div>
+                    <div class="form-group">
+                        <label>Confermi di voler eliminare il corso {{corso.titolo}}?</label>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annulla</button>
+                    <button type="button" class="btn btn-danger" ng-click="deleteCorso()">Elimina</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

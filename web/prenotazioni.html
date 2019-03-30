@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<div class="container">
+    <form class="form-inline mt-4">
+        <input type="text" class="form-control mb-2 mr-sm-2" ng-model="search" placeholder="Cerca utente...">
+    </form>
+
+    <div class="accordion mt-4 mb-4" id="accordionExample">
+        <div class="card" ng-repeat="utente in (filteredList = (utenti_data | filter: { username: search } | orderBy: ['nome'])) | limitTo:itemsPerPage:limit">
+            <div class="card-header cursor-pointer" data-toggle="collapse" data-target="#collapse-{{utente.id}}" id="heading-{{utente.id}}" ng-init="utente.statoFilter = 'ATTIVA'">
+                <h5 class="mb-0">
+                    {{utente.username}}
+                </h5> 
+            </div>
+
+            <div id="collapse-{{utente.id}}" class="collapse" aria-labelledby="heading-{{utente.id}}" data-parent="#accordionExample">
+                <div class="card-body">
+                    <ul class="nav nav-pills nav-fill mb-3" id="tab-{{utente.id}}" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="attive-tab-{{utente.id}}" ng-click="utente.statoFilter = 'ATTIVA'" target="_self" data-toggle="pill" href="#" role="tab" aria-controls="attive" aria-selected="true">Attive</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="effettuate-tab-{{utente.id}}" ng-click="utente.statoFilter = 'EFFETTUATA'" target="_self" data-toggle="pill" href="#" role="tab" aria-controls="effettuate" aria-selected="false">Effettuate</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="cancellate-tab-{{utente.id}}" ng-click="utente.statoFilter = 'DISDETTA'" target="_self" data-toggle="pill" href="#" role="tab" aria-controls="cancellate" aria-selected="false">Cancellate</a>
+                        </li>
+                    </ul>
+                    <ul class="list-group">
+                        <li class="list-group-item clearfix" ng-repeat="prenotazione in (utente.prenotazioniFiltrate = (utente.prenotazioni | filter: { stato: utente.statoFilter }))">
+                            <div class="container-fluid">
+                                <div class="row align-items-center justify-content-between">
+                                        <b>{{prenotazione.corso.titolo}}, {{prenotazione.docente.nome}} {{prenotazione.docente.cognome}}, {{dayConverter(prenotazione.giorno)}} alle {{prenotazione.oraInizio}} - creata il {{ prenotazione.createdAt | date :'dd/MM/yyyy'}} alle {{ prenotazione.createdAt | date :'HH:mm:ss'}}</b>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        <div ng-if="utente.prenotazioniFiltrate.length === 0" class="alert alert-warning" role="alert">
+                            Nessuna informazione presente.
+                        </div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div ng-if="filteredList.length === 0" class="alert alert-warning" role="alert">
+        Nessuna informazione presente.
+    </div>
+    
+    <br/>
+    <pagination-controls item-count="filteredList.length" items-per-page="itemsPerPage" begin-index="limit"></pagination-controls>
+</div>
